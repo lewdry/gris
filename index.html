@@ -3,21 +3,29 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Gris – grid touch game</title>
+  <title>Gris, the grid touch game</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+  <a href="#grid" class="skip-link">Skip to grid</a>
+  <noscript>
+    <section class="nojs-warning" aria-live="polite">
+      JavaScript is required to play the Gris grid game. Please enable JavaScript and reload.
+    </section>
+  </noscript>
+
   <main class="app" aria-label="Gris grid play surface">
     <section class="header">
       <h1>Gris</h1>
+
       <div class="controls">
-        <button id="resetBtn" type="button">Reset grid</button>
+        <button id="resetBtn" type="button">Reset</button>
       </div>
     </section>
 
-    <div class="grid-wrap" role="application" aria-live="polite" aria-label="touch-enabled grid">
-      <div id="grid" class="grid"></div>
+    <div class="grid-wrap" role="grid" aria-label="touch-enabled grid">
+      <div id="grid" class="grid" aria-live="off"></div>
     </div>
   </main>
 

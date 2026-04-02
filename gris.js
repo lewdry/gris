@@ -1,5 +1,4 @@
 const grid = document.getElementById('grid');
-const statusEl = document.getElementById('status');
 const resetBtn = document.getElementById('resetBtn');
 
 const positiveWords = [
@@ -57,6 +56,8 @@ function createCells() {
     cell.type = 'button';
     cell.className = 'cell';
     cell.dataset.index = i;
+    cell.setAttribute('role', 'gridcell');
+    cell.setAttribute('aria-pressed', 'false');
     cell.setAttribute('aria-label', `Cell ${Math.floor(i / cols) + 1} of ${cols * rows}`);
     cell.addEventListener('pointerdown', toggleCell);
     cell.addEventListener('pointerenter', onCellEnter);
@@ -65,9 +66,8 @@ function createCells() {
   }
 }
 
-function updateStatus(text) {
-  if (!statusEl) return;
-  statusEl.textContent = text || `Grid ${cols} × ${rows}. ${cols * rows} cells.`;
+function updateStatus() {
+  // status text removed by request
 }
 
 function setCellActive(x, y, active = true) {
@@ -79,7 +79,10 @@ function setCellActive(x, y, active = true) {
 }
 
 function clearGrid() {
-  [...grid.children].forEach(cell => cell.classList.remove('active'));
+  [...grid.children].forEach(cell => {
+    cell.classList.remove('active');
+    cell.setAttribute('aria-pressed', 'false');
+  });
 }
 
 function randomWord() {
@@ -126,7 +129,6 @@ function paintWord(word) {
     }
   });
 
-  updateStatus(`Showing '${word}'`);
 }
 
 function buildGrid() {
@@ -138,25 +140,65 @@ function buildGrid() {
 }
 
 function resetGrid() {
-  paintWord(randomWord());
+  const word = randomWord();
+  paintWord(word);
 }
 
 function toggleCell(e) {
   const cell = e.currentTarget;
-  cell.classList.toggle('active');
+  const isActive = cell.classList.toggle('active');
+  cell.setAttribute('aria-pressed', String(isActive));
   pointerDown = true;
 }
 
 function onCellEnter(e) {
   if (!pointerDown) return;
   const cell = e.currentTarget;
-  cell.classList.toggle('active');
+  const isActive = cell.classList.toggle('active');
+  cell.setAttribute('aria-pressed', String(isActive));
 }
 
 function onCellKeyDown(e) {
-  if (e.key === 'Enter' || e.key === ' ') {
-    e.preventDefault();
-    e.currentTarget.classList.toggle('active');
+  const cell = e.currentTarget;
+  const index = Number(cell.dataset.index);
+  const x = index % cols;
+  const y = Math.floor(index / cols);
+
+  switch (e.key) {
+    case 'Enter':
+    case ' ': {
+      e.preventDefault();
+      const isActive = cell.classList.toggle('active');
+      cell.setAttribute('aria-pressed', String(isActive));
+      break;
+    }
+    case 'ArrowRight':
+      e.preventDefault();
+      focusCell(x + 1, y);
+      break;
+    case 'ArrowLeft':
+      e.preventDefault();
+      focusCell(x - 1, y);
+      break;
+    case 'ArrowDown':
+      e.preventDefault();
+      focusCell(x, y + 1);
+      break;
+    case 'ArrowUp':
+      e.preventDefault();
+      focusCell(x, y - 1);
+      break;
+    default:
+      break;
+  }
+}
+
+function focusCell(x, y) {
+  if (x < 0 || x >= cols || y < 0 || y >= rows) return;
+  const idx = y * cols + x;
+  const nextCell = grid.children[idx];
+  if (nextCell instanceof HTMLElement) {
+    nextCell.focus();
   }
 }
 
