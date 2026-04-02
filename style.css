@@ -1,0 +1,109 @@
+:root {
+  --bg: #f6f5f2;
+  --panel: #eaebe7;
+  --border: #d4d3cf;
+  --line: #c8c7c3;
+  --block: #2f2e2b;
+  --text: #222024;
+  --accent: #8c7a64;
+  --shadow: 0 12px 28px rgba(0,0,0,.14);
+  --font: "Spectral", "Georgia", serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100%; }
+body {
+  font-family: var(--font);
+  color: var(--text);
+  background: radial-gradient(circle at 30% 20%, #fefdfb 0%, var(--bg) 55%, #e5e5e2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  line-height: 1.35;
+}
+
+.app {
+  width: min(100%, 1000px);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: .9rem;
+  gap: .75rem;
+}
+
+h1 {
+  font-size: clamp(1.2rem, 3vw, 1.6rem);
+  font-weight: 700;
+  letter-spacing: .03em;
+  color: var(--accent);
+}
+
+.controls {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+}
+
+button {
+  border-radius: .65rem;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  padding: .45rem .8rem;
+  font: inherit;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+button:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 6px rgba(0,0,0,.2);
+}
+
+.grid-wrap {
+  position: relative;
+  border: 1px solid var(--border);
+  background: #fff;
+  box-shadow: var(--shadow);
+  border-radius: 0;
+  overflow: hidden;
+  aspect-ratio: 37/23;
+  width: 100%;
+  max-height: calc(100vh - 180px);
+}
+
+.grid {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+.cell {
+  border: 0;
+  outline: 1px solid var(--line);
+  outline-offset: -1px;
+  background-color: #fff;
+  transition: background .1s ease;
+  border-radius: 0;
+  aspect-ratio: 1 / 1;
+}
+
+.cell.active {
+  background-color: var(--block);
+}
+
+@media (orientation: portrait) {
+  .grid-wrap { aspect-ratio: 23/37; }
+}
+
+@media (max-width: 520px) {
+  body { padding: .65rem; }
+  .header { flex-direction: column; align-items: stretch; }
+  .controls { justify-content: flex-start; width: 100%; }
+  .grid-wrap { max-height: calc(100vh - 220px); }
+}

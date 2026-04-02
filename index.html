@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Gris – grid touch game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <main class="app" aria-label="Gris grid play surface">
+    <section class="header">
+      <h1>Gris</h1>
+      <div class="controls">
+        <button id="resetBtn" type="button">Reset grid</button>
+      </div>
+    </section>
+
+    <div class="grid-wrap" role="application" aria-live="polite" aria-label="touch-enabled grid">
+      <div id="grid" class="grid"></div>
+    </div>
+  </main>
+
+  <script src="gris.js"></script>
+</body>
+</html>
