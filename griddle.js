@@ -1,26 +1,27 @@
 const grid = document.getElementById('grid');
 const resetBtn = document.getElementById('resetBtn');
+const clearBtn = document.getElementById('clearBtn');
 
 const positiveWords = [
   'Able', 'Ace', 'Adore', 'Agile', 'Aid', 'Aim', 'Align', 'Alive', 'Amaze', 'Ample', 'Amuse', 'Angel', 'Apt', 'Art', 'Asset', 'Aura', 'Award', 'Aware', 'Awe',
   'Babe', 'Balm', 'Beam', 'Best', 'Big', 'Bio', 'Bliss', 'Bloom', 'Bold', 'Boost', 'Boss', 'Brave', 'Brisk', 'Build',
-  'Calm', 'Care', 'Charm', 'Cheer', 'Chic', 'Chief', 'Clean', 'Cool', 'Cozy', 'Crisp', 'Crown', 'Cupid', 'Cure', 'Cute',
+  'Calm', 'Care', 'Charm', 'Cheer', 'Chic', 'Chief', 'Clean', 'Cool', 'Crisp', 'Crown', 'Cupid', 'Cure', 'Cute',
   'Dance', 'Dawn', 'Day', 'Dear', 'Done', 'Dose', 'Dot', 'Dream', 'Drive',
-  'Earn', 'Ease', 'Easy', 'Eco', 'Edit', 'Elite', 'Enjoy', 'Epic', 'Exact', 'Extra', 'Exult',
+  'Earn', 'Ease', 'Easy', 'Eco', 'Edit', 'Elite', 'Enjoy', 'Epic', 'Exact', 'Extra',
   'Fab', 'Fact', 'Fair', 'Faith', 'Fame', 'Fancy', 'Fast', 'Feast', 'Fine', 'Firm', 'Flair', 'Flash', 'Fleet', 'Flora', 'Flow', 'Fly', 'Focus', 'Fond', 'Force', 'Forge', 'Frank', 'Free', 'Fresh', 'Fun',
   'Gain', 'Game', 'Gem', 'Giddy', 'Gig', 'Glad', 'Gleam', 'Glee', 'Glide', 'Glory', 'Glow', 'Gold', 'Good', 'Grace', 'Grand', 'Grant', 'Grasp', 'Great', 'Grin', 'Grow', 'Guide', 'Guru', 'Guy',
-  'Hail', 'Halo', 'Handy', 'Happy', 'Hardy', 'Haven', 'Heal', 'Heart', 'Help', 'Hero', 'Hip', 'Honey', 'Honor', 'Hope', 'Hot', 'Hub', 'Hug', 'Humor',
+  'Hail', 'Halo', 'Handy', 'Happy', 'Hardy', 'Haven', 'Heal', 'Heart', 'Help', 'Hero', 'Hip', 'Honey', 'Hope', 'Hot', 'Hub', 'Hug',
   'Icon', 'Idea', 'Ideal', 'Inner',
   'Jazzy', 'Jewel', 'Joke', 'Jolly', 'Joy', 'Jump', 'Just',
   'Keen', 'Keep', 'Key', 'Kin', 'Kind', 'Kite', 'Knack', 'Know',
-  'Laugh', 'Lead', 'Leap', 'Learn', 'Light', 'Lit', 'Live', 'Logic', 'Love', 'Loyal', 'Lucid', 'Luck', 'Lucky', 'Luv',
+  'Laugh', 'Lead', 'Leap', 'Learn', 'Light', 'Lit', 'Live', 'Logic', 'Love', 'Loyal', 'Lucid', 'Luck', 'Lucky',
   'Magic', 'Mate', 'Max', 'Merry', 'Mirth', 'Model', 'Moral', 'Muse', 'Music',
   'Neat', 'Nerve', 'New', 'Nice', 'Nifty', 'Noble', 'Novel', 'Now',
   'Oasis', 'Okay', 'Old', 'Open', 'Own',
   'Pace', 'Pal', 'Pax', 'Peace', 'Perk', 'Play', 'Plus', 'Pop', 'Power', 'Proud', 'Pure',
   'Quiet',
   'Raw', 'Real', 'Relax', 'Rich', 'Rise',
-  'Safe', 'Savor', 'Sky', 'Smile', 'Spark', 'Star', 'Sun', 'Sweet',
+  'Safe', 'Sky', 'Smile', 'Spark', 'Star', 'Sun', 'Sweet',
   'Top', 'True', 'Trust', 'Try',
   'Unity',
   'Vibe', 'Vivid',
@@ -64,6 +65,8 @@ let rows = defaultSize.dragY;
 let pointerDown = false;
 let activePointerId = null;
 let lastToggledIndex = null;
+let paintMode = null; // 'add' or 'remove' — set on first touch
+let currentWord = null;
 
 function getLayout() {
   const isPortrait = window.matchMedia('(orientation: portrait)').matches;
@@ -205,19 +208,31 @@ function buildGrid() {
   }
 
   createCells();
-  paintWord(randomWord());
+  if (!currentWord) {
+    currentWord = randomWord();
+  }
+  paintWord(currentWord);
 }
 
 function resetGrid() {
-  const word = randomWord();
-  paintWord(word);
+  currentWord = randomWord();
+  paintWord(currentWord);
+}
+
+function handleClear() {
+  clearGrid();
 }
 
 function onCellPointerDown(e) {
   const cell = e.currentTarget;
   const index = Number(cell.dataset.index);
-  const isActive = cell.classList.toggle('active');
-  cell.setAttribute('aria-pressed', String(isActive));
+  const wasActive = cell.classList.contains('active');
+
+  // First touch sets the mode for the entire drag
+  paintMode = wasActive ? 'remove' : 'add';
+
+  cell.classList.toggle('active', paintMode === 'add');
+  cell.setAttribute('aria-pressed', String(paintMode === 'add'));
 
   pointerDown = true;
   activePointerId = e.pointerId;
@@ -229,19 +244,19 @@ function onCellPointerDown(e) {
 }
 
 function onCellEnter(e) {
-  if (!pointerDown) return;
+  if (!pointerDown || !paintMode) return;
 
   const cell = e.currentTarget;
   const index = Number(cell.dataset.index);
   if (!Number.isFinite(index) || index === lastToggledIndex) return;
 
-  const isActive = cell.classList.toggle('active');
-  cell.setAttribute('aria-pressed', String(isActive));
+  cell.classList.toggle('active', paintMode === 'add');
+  cell.setAttribute('aria-pressed', String(paintMode === 'add'));
   lastToggledIndex = index;
 }
 
 function onGridPointerMove(e) {
-  if (!pointerDown || e.pointerId !== activePointerId) return;
+  if (!pointerDown || !paintMode || e.pointerId !== activePointerId) return;
 
   const cell = document.elementFromPoint(e.clientX, e.clientY)?.closest('.cell');
   if (!(cell instanceof HTMLElement)) return;
@@ -249,8 +264,8 @@ function onGridPointerMove(e) {
   const index = Number(cell.dataset.index);
   if (!Number.isFinite(index) || index === lastToggledIndex) return;
 
-  const isActive = cell.classList.toggle('active');
-  cell.setAttribute('aria-pressed', String(isActive));
+  cell.classList.toggle('active', paintMode === 'add');
+  cell.setAttribute('aria-pressed', String(paintMode === 'add'));
   lastToggledIndex = index;
 }
 
@@ -260,6 +275,7 @@ function onPointerUp(e) {
   pointerDown = false;
   activePointerId = null;
   lastToggledIndex = null;
+  paintMode = null;
 
   const el = document.elementFromPoint(e.clientX, e.clientY);
   if (el && el.releasePointerCapture && e.pointerId != null) {
@@ -315,6 +331,7 @@ window.addEventListener('pointerup', () => {
   pointerDown = false;
   activePointerId = null;
   lastToggledIndex = null;
+  paintMode = null;
 });
 
 let resizeTimer = null;
@@ -331,5 +348,6 @@ if (window.visualViewport) {
 }
 
 resetBtn.addEventListener('click', resetGrid);
+clearBtn.addEventListener('click', handleClear);
 
 buildGrid();
