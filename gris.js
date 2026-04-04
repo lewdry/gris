@@ -2,8 +2,31 @@ const grid = document.getElementById('grid');
 const resetBtn = document.getElementById('resetBtn');
 
 const positiveWords = [
-  'Ace','Awe','Bio','Day','Dot','Eco','Fly','Fun','Gem','Gig','Glee','Guy','Hip','Hot','Hub','Hug','Joy','Key','Kin','Lit','Luv','Max','New','Now','Old','Own','Pal','Pax','Pop','Raw','Sky','Sun','Top','Try','Win','Yes','Zen',
-  'Able','Aura','Babe','Beam','Best','Bold','Calm','Care','Chic','Cool','Cute','Dear','Done','Dose','Easy','Epic','Fair','Fame','Fine','Flow','Free','Glad','Glow','Gold','Good','Grin','Halo','Heal','Help','Hero','Hope','Icon','Kind','Kite','Live','Love','Luck','Nice','Pure','Real','Rich','Rise','Safe','Star','True','Vibe','Warm','Wise','Zest','Adore','Alive','Ample','Angel','Bliss','Bloom','Brave','Bright','Charm','Cheer','Clean','Dream','Elite','Enjoy','Faith','Fancy','Fresh','Grand','Great','Happy','Heart','Honey','Ideal','Jolly','Light','Lucky','Magic','Merry','Noble','Peace','Proud','Quiet','Relax','Savor','Smile','Spark','Sweet','Trust','Unity','Vivid','Worth','Young','Zesty'
+  'Able', 'Ace', 'Adore', 'Agile', 'Aid', 'Aim', 'Align', 'Alive', 'Amaze', 'Ample', 'Amuse', 'Angel', 'Apt', 'Art', 'Asset', 'Aura', 'Award', 'Aware', 'Awe',
+  'Babe', 'Balm', 'Beam', 'Best', 'Big', 'Bio', 'Bliss', 'Bloom', 'Bold', 'Boost', 'Boss', 'Brave', 'Brisk', 'Build',
+  'Calm', 'Care', 'Charm', 'Cheer', 'Chic', 'Chief', 'Clean', 'Cool', 'Cozy', 'Crisp', 'Crown', 'Cupid', 'Cure', 'Cute',
+  'Dance', 'Dawn', 'Day', 'Dear', 'Done', 'Dose', 'Dot', 'Dream', 'Drive',
+  'Earn', 'Ease', 'Easy', 'Eco', 'Edit', 'Elite', 'Enjoy', 'Epic', 'Exact', 'Extra', 'Exult',
+  'Fab', 'Fact', 'Fair', 'Faith', 'Fame', 'Fancy', 'Fast', 'Feast', 'Fine', 'Firm', 'Flair', 'Flash', 'Fleet', 'Flora', 'Flow', 'Fly', 'Focus', 'Fond', 'Force', 'Forge', 'Frank', 'Free', 'Fresh', 'Fun',
+  'Gain', 'Game', 'Gem', 'Giddy', 'Gig', 'Glad', 'Gleam', 'Glee', 'Glide', 'Glory', 'Glow', 'Gold', 'Good', 'Grace', 'Grand', 'Grant', 'Grasp', 'Great', 'Grin', 'Grow', 'Guide', 'Guru', 'Guy',
+  'Hail', 'Halo', 'Handy', 'Happy', 'Hardy', 'Haven', 'Heal', 'Heart', 'Help', 'Hero', 'Hip', 'Honey', 'Honor', 'Hope', 'Hot', 'Hub', 'Hug', 'Humor',
+  'Icon', 'Idea', 'Ideal', 'Inner',
+  'Jazzy', 'Jewel', 'Joke', 'Jolly', 'Joy', 'Jump', 'Just',
+  'Keen', 'Keep', 'Key', 'Kin', 'Kind', 'Kite', 'Knack', 'Know',
+  'Laugh', 'Lead', 'Leap', 'Learn', 'Light', 'Lit', 'Live', 'Logic', 'Love', 'Loyal', 'Lucid', 'Luck', 'Lucky', 'Luv',
+  'Magic', 'Mate', 'Max', 'Merry', 'Mirth', 'Model', 'Moral', 'Muse', 'Music',
+  'Neat', 'Nerve', 'New', 'Nice', 'Nifty', 'Noble', 'Novel', 'Now',
+  'Oasis', 'Okay', 'Old', 'Open', 'Own',
+  'Pace', 'Pal', 'Pax', 'Peace', 'Perk', 'Play', 'Plus', 'Pop', 'Power', 'Proud', 'Pure',
+  'Quiet',
+  'Raw', 'Real', 'Relax', 'Rich', 'Rise',
+  'Safe', 'Savor', 'Sky', 'Smile', 'Spark', 'Star', 'Sun', 'Sweet',
+  'Top', 'True', 'Trust', 'Try',
+  'Unity',
+  'Vibe', 'Vivid',
+  'Warm', 'Win', 'Wise', 'Worth',
+  'Yes', 'Young',
+  'Zen', 'Zest', 'Zesty'
 ];
 
 const font5x7 = {
@@ -35,7 +58,7 @@ const font5x7 = {
   Z: [0b11111,0b00001,0b00010,0b00100,0b01000,0b10000,0b11111]
 };
 
-const defaultSize = { dragX: 37, dragY: 23, portraitX: 23, portraitY: 37 };
+const defaultSize = { dragX: 31, dragY: 20, portraitX: 20, portraitY: 31 };
 let cols = defaultSize.dragX;
 let rows = defaultSize.dragY;
 let pointerDown = false;
