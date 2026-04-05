@@ -1,6 +1,7 @@
 const grid = document.getElementById('grid');
 const resetBtn = document.getElementById('resetBtn');
 const clearBtn = document.getElementById('clearBtn');
+const shareBtn = document.getElementById('shareBtn');
 
 const positiveWords = [
   'Able', 'Ace', 'Adore', 'Agile', 'Aid', 'Aim', 'Align', 'Alive', 'Amaze', 'Ample', 'Amuse', 'Angel', 'Apt', 'Art', 'Asset', 'Aura', 'Award', 'Aware', 'Awe',
@@ -349,5 +350,86 @@ if (window.visualViewport) {
 
 resetBtn.addEventListener('click', resetGrid);
 clearBtn.addEventListener('click', handleClear);
+shareBtn.addEventListener('click', handleShare);
+
+// --- Share: render grid to PNG and invoke Web Share API ---
+
+function gridToCanvas() {
+  const scale = 2; // retina-quality export
+  const cellPx = Math.max(8, Math.round(
+    (document.querySelector('.grid-wrap')?.offsetWidth || cols * 16) / cols
+  ));
+  const w = cols * cellPx * scale;
+  const h = rows * cellPx * scale;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d');
+
+  // Read themed colours from CSS custom properties
+  const style = getComputedStyle(document.documentElement);
+  const bgColour = '#ffffff';
+  const lineColour = style.getPropertyValue('--line').trim() || '#c8c7c3';
+  const blockColour = style.getPropertyValue('--block').trim() || '#565349';
+
+  // Fill background
+  ctx.fillStyle = bgColour;
+  ctx.fillRect(0, 0, w, h);
+
+  const children = grid.children;
+  for (let i = 0; i < children.length; i++) {
+    const cell = children[i];
+    const cx = (i % cols) * cellPx * scale;
+    const cy = Math.floor(i / cols) * cellPx * scale;
+    const s = cellPx * scale;
+
+    if (cell.classList.contains('active')) {
+      ctx.fillStyle = blockColour;
+      ctx.fillRect(cx, cy, s, s);
+    }
+
+    // Grid lines
+    ctx.strokeStyle = lineColour;
+    ctx.lineWidth = scale;
+    ctx.strokeRect(cx, cy, s, s);
+  }
+
+  return canvas;
+}
+
+async function handleShare() {
+  const canvas = gridToCanvas();
+
+  // Convert canvas to Blob
+  const blob = await new Promise(resolve =>
+    canvas.toBlob(resolve, 'image/png')
+  );
+
+  const file = new File([blob], 'griddle.png', { type: 'image/png' });
+
+  // Try Web Share API (mobile Safari, Chrome Android, etc.)
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({
+        title: 'My Griddle drawing',
+        files: [file]
+      });
+      return;
+    } catch (err) {
+      if (err.name === 'AbortError') return; // user cancelled
+    }
+  }
+
+  // Fallback: download the PNG directly
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'griddle.png';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
 
 buildGrid();
