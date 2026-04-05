@@ -2,6 +2,7 @@ const grid = document.getElementById('grid');
 const resetBtn = document.getElementById('resetBtn');
 const clearBtn = document.getElementById('clearBtn');
 const shareBtn = document.getElementById('shareBtn');
+const undoBtn = document.getElementById('undoBtn');
 
 const positiveWords = [
   'Able', 'About', 'Above', 'Ace', 'Adore', 'After', 'Again', 'Agile', 'Aid', 'Aim', 'Align', 'Alive', 'All', 'Also', 'Amaze', 'Ample', 'Amuse', 'And', 'Angel', 'Any', 'Apple', 'Apt', 'Are', 'Area', 'Arm', 'Art', 'Ask', 'Asset', 'Ate', 'Aura', 'Award', 'Aware', 'Away', 'Awe',
@@ -68,6 +69,11 @@ let activePointerId = null;
 let lastToggledIndex = null;
 let paintMode = null; // 'add' or 'remove' — set on first touch
 let currentWord = null;
+let pendingDragStartState = null;
+
+const HISTORY_LIMIT = 50;
+const undoStack = [];
+const redoStack = [];
 
 function getLayout() {
   const isPortrait = window.matchMedia('(orientation: portrait)').matches;
@@ -136,12 +142,156 @@ function updateStatus() {
   // status text removed by request
 }
 
+function isPortraitLayout(layoutCols, layoutRows) {
+  return layoutRows > layoutCols;
+}
+
+function getLogicalDimensions(layoutCols, layoutRows) {
+  if (isPortraitLayout(layoutCols, layoutRows)) {
+    return { logicalCols: layoutRows, logicalRows: layoutCols };
+  }
+  return { logicalCols: layoutCols, logicalRows: layoutRows };
+}
+
+function actualToLogical(x, y, layoutCols, layoutRows) {
+  if (!isPortraitLayout(layoutCols, layoutRows)) {
+    return { x, y };
+  }
+
+  return {
+    x: layoutRows - 1 - y,
+    y: x
+  };
+}
+
+function logicalToActual(logicalX, logicalY, layoutCols, layoutRows) {
+  if (!isPortraitLayout(layoutCols, layoutRows)) {
+    return { x: logicalX, y: logicalY };
+  }
+
+  return {
+    x: logicalY,
+    y: layoutRows - 1 - logicalX
+  };
+}
+
+function getGridState() {
+  const activeIndices = [];
+  const children = grid.children;
+  for (let i = 0; i < children.length; i++) {
+    if (children[i].classList.contains('active')) {
+      activeIndices.push(i);
+    }
+  }
+
+  return {
+    cols,
+    rows,
+    activeIndices
+  };
+}
+
+function statesEqual(a, b) {
+  if (!a || !b) return false;
+  if (a.cols !== b.cols || a.rows !== b.rows) return false;
+  if (a.activeIndices.length !== b.activeIndices.length) return false;
+
+  for (let i = 0; i < a.activeIndices.length; i++) {
+    if (a.activeIndices[i] !== b.activeIndices[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function cloneState(state) {
+  return {
+    cols: state.cols,
+    rows: state.rows,
+    activeIndices: [...state.activeIndices]
+  };
+}
+
+function trimHistory(stack) {
+  while (stack.length > HISTORY_LIMIT) {
+    stack.shift();
+  }
+}
+
+function updateHistoryButtons() {
+  if (undoBtn) undoBtn.disabled = undoStack.length === 0;
+}
+
+function applyState(state) {
+  clearGrid();
+  const sourceLogical = getLogicalDimensions(state.cols, state.rows);
+  const targetLogical = getLogicalDimensions(cols, rows);
+  const offsetX = Math.floor((targetLogical.logicalCols - sourceLogical.logicalCols) / 2);
+  const offsetY = Math.floor((targetLogical.logicalRows - sourceLogical.logicalRows) / 2);
+
+  for (const idx of state.activeIndices) {
+    const sourceX = idx % state.cols;
+    const sourceY = Math.floor(idx / state.cols);
+    const logicalPoint = actualToLogical(sourceX, sourceY, state.cols, state.rows);
+    const mappedLogicalX = logicalPoint.x + offsetX;
+    const mappedLogicalY = logicalPoint.y + offsetY;
+
+    if (
+      mappedLogicalX < 0 ||
+      mappedLogicalX >= targetLogical.logicalCols ||
+      mappedLogicalY < 0 ||
+      mappedLogicalY >= targetLogical.logicalRows
+    ) {
+      continue;
+    }
+
+    const mappedPoint = logicalToActual(mappedLogicalX, mappedLogicalY, cols, rows);
+    setCellActive(mappedPoint.x, mappedPoint.y, true);
+  }
+}
+
+function pushUndoState(beforeState) {
+  const currentState = getGridState();
+  if (statesEqual(beforeState, currentState)) {
+    return;
+  }
+
+  undoStack.push(cloneState(beforeState));
+  trimHistory(undoStack);
+  redoStack.length = 0;
+  updateHistoryButtons();
+}
+
+function undo() {
+  if (undoStack.length === 0) return;
+
+  const currentState = getGridState();
+  const prevState = undoStack.pop();
+  redoStack.push(cloneState(currentState));
+  trimHistory(redoStack);
+  applyState(prevState);
+  updateHistoryButtons();
+}
+
+function redo() {
+  if (redoStack.length === 0) return;
+
+  const currentState = getGridState();
+  const nextState = redoStack.pop();
+  undoStack.push(cloneState(currentState));
+  trimHistory(undoStack);
+  applyState(nextState);
+  updateHistoryButtons();
+}
+
 function setCellActive(x, y, active = true) {
   if (x < 0 || x >= cols || y < 0 || y >= rows) return;
   const idx = y * cols + x;
   const cell = grid.children[idx];
   if (!cell) return;
   cell.classList.toggle('active', active);
+  cell.setAttribute('aria-pressed', String(active));
 }
 
 function clearGrid() {
@@ -198,6 +348,7 @@ function paintWord(word) {
 }
 
 function buildGrid() {
+  const previousState = grid.children.length > 0 ? getGridState() : null;
   const layout = getLayout();
   cols = layout.x;
   rows = layout.y;
@@ -211,22 +362,35 @@ function buildGrid() {
   }
 
   createCells();
+  if (previousState) {
+    applyState(previousState);
+    updateHistoryButtons();
+    return;
+  }
+
   if (!currentWord) {
     currentWord = randomWord();
   }
   paintWord(currentWord);
+  updateHistoryButtons();
 }
 
 function resetGrid() {
+  const beforeState = getGridState();
   currentWord = randomWord();
   paintWord(currentWord);
+  pushUndoState(beforeState);
 }
 
 function handleClear() {
+  const beforeState = getGridState();
   clearGrid();
+  pushUndoState(beforeState);
 }
 
 function onCellPointerDown(e) {
+  pendingDragStartState = getGridState();
+
   const cell = e.currentTarget;
   const index = Number(cell.dataset.index);
   const wasActive = cell.classList.contains('active');
@@ -275,6 +439,11 @@ function onGridPointerMove(e) {
 function onPointerUp(e) {
   if (e.pointerId !== activePointerId) return;
 
+  if (pendingDragStartState) {
+    pushUndoState(pendingDragStartState);
+    pendingDragStartState = null;
+  }
+
   pointerDown = false;
   activePointerId = null;
   lastToggledIndex = null;
@@ -296,8 +465,10 @@ function onCellKeyDown(e) {
     case 'Enter':
     case ' ': {
       e.preventDefault();
+      const beforeState = getGridState();
       const isActive = cell.classList.toggle('active');
       cell.setAttribute('aria-pressed', String(isActive));
+      pushUndoState(beforeState);
       break;
     }
     case 'ArrowRight':
@@ -330,7 +501,21 @@ function focusCell(x, y) {
   }
 }
 
+function onWindowKeyDown(e) {
+  const key = e.key.toLowerCase();
+  const modifier = e.metaKey || e.ctrlKey;
+  if (!modifier || key !== 'z') return;
+
+  e.preventDefault();
+  if (e.shiftKey) {
+    redo();
+  } else {
+    undo();
+  }
+}
+
 window.addEventListener('pointerup', () => {
+  pendingDragStartState = null;
   pointerDown = false;
   activePointerId = null;
   lastToggledIndex = null;
@@ -353,6 +538,8 @@ if (window.visualViewport) {
 resetBtn.addEventListener('click', resetGrid);
 clearBtn.addEventListener('click', handleClear);
 shareBtn.addEventListener('click', handleShare);
+if (undoBtn) undoBtn.addEventListener('click', undo);
+window.addEventListener('keydown', onWindowKeyDown);
 grid.addEventListener('pointermove', onGridPointerMove);
 grid.addEventListener('pointerup', onPointerUp);
 grid.addEventListener('pointercancel', onPointerUp);
