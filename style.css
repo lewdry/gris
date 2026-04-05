@@ -1,13 +1,22 @@
+@font-face {
+  font-family: "SilkscreenLocal";
+  src: url("assets/fonts/Silkscreen-Regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
 :root {
   --bg: #f6f5f2;
   --panel: #eaebe7;
   --border: #d4d3cf;
   --line: #c8c7c3;
   --block: #565349;
-  --text: #222024;
-  --accent: #9c9994;
+  --text: #565349;
+  --accent: #565349;
   --shadow: 0 12px 28px rgba(0,0,0,.14);
-  --font: "Spectral", "Georgia", serif;
+  --font: "SilkscreenLocal", "Courier New", "Liberation Mono", monospace;
+  --ui-font: "SilkscreenLocal", "Courier New", "Liberation Mono", monospace;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -50,7 +59,8 @@ body {
 
 h1 {
   font-size: clamp(1.2rem, 3vw, 1.6rem);
-  font-weight: 700;
+  font-family: var(--ui-font);
+  font-weight: 400;
   letter-spacing: .03em;
   color: var(--accent);
 }
@@ -68,6 +78,8 @@ button {
   color: var(--text);
   padding: .45rem .8rem;
   font: inherit;
+  font-family: var(--ui-font);
+  font-weight: 400;
   cursor: pointer;
   transition: transform .15s ease, box-shadow .15s ease;
 }
@@ -160,8 +172,8 @@ button:active {
     --border: #42495f;
     --line: #3b4252;
     --block: #e5e9f0;
-    --text: #e5e9f0;
-    --accent: #88c0d0;
+    --text: #565349;
+    --accent: #565349;
     --shadow: 0 12px 28px rgba(0,0,0,.35);
   }
 }

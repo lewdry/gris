@@ -4,30 +4,30 @@ const clearBtn = document.getElementById('clearBtn');
 const shareBtn = document.getElementById('shareBtn');
 
 const positiveWords = [
-  'Able', 'Ace', 'Adore', 'Agile', 'Aid', 'Aim', 'Align', 'Alive', 'Amaze', 'Ample', 'Amuse', 'Angel', 'Apt', 'Art', 'Asset', 'Aura', 'Award', 'Aware', 'Awe',
-  'Babe', 'Balm', 'Beam', 'Best', 'Big', 'Bio', 'Bliss', 'Bloom', 'Bold', 'Boost', 'Boss', 'Brave', 'Brisk', 'Build',
-  'Calm', 'Care', 'Charm', 'Cheer', 'Chic', 'Chief', 'Clean', 'Cool', 'Crisp', 'Crown', 'Cupid', 'Cure', 'Cute',
-  'Dance', 'Dawn', 'Day', 'Dear', 'Done', 'Dose', 'Dot', 'Dream', 'Drive',
-  'Earn', 'Ease', 'Easy', 'Eco', 'Edit', 'Elite', 'Enjoy', 'Epic', 'Exact', 'Extra',
-  'Fab', 'Fact', 'Fair', 'Faith', 'Fame', 'Fancy', 'Fast', 'Feast', 'Fine', 'Firm', 'Flair', 'Flash', 'Fleet', 'Flora', 'Flow', 'Fly', 'Focus', 'Fond', 'Force', 'Forge', 'Frank', 'Free', 'Fresh', 'Fun',
-  'Gain', 'Game', 'Gem', 'Giddy', 'Gig', 'Glad', 'Gleam', 'Glee', 'Glide', 'Glory', 'Glow', 'Gold', 'Good', 'Grace', 'Grand', 'Grant', 'Grasp', 'Great', 'Grin', 'Grow', 'Guide', 'Guru', 'Guy',
-  'Hail', 'Halo', 'Handy', 'Happy', 'Hardy', 'Haven', 'Heal', 'Heart', 'Help', 'Hero', 'Hip', 'Honey', 'Hope', 'Hot', 'Hub', 'Hug',
-  'Icon', 'Idea', 'Ideal', 'Inner',
+  'Able', 'About', 'Above', 'Ace', 'Adore', 'After', 'Again', 'Agile', 'Aid', 'Aim', 'Align', 'Alive', 'All', 'Also', 'Amaze', 'Ample', 'Amuse', 'And', 'Angel', 'Any', 'Apple', 'Apt', 'Are', 'Area', 'Arm', 'Art', 'Ask', 'Asset', 'Ate', 'Aura', 'Award', 'Aware', 'Away', 'Awe',
+  'Babe', 'Baby', 'Back', 'Ball', 'Balm', 'Base', 'Beam', 'Bear', 'Been', 'Began', 'Begin', 'Bell', 'Best', 'Big', 'Bio', 'Bird', 'Black', 'Bliss', 'Bloom', 'Blue', 'Boat', 'Body', 'Bold', 'Book', 'Boost', 'Boss', 'Both', 'Box', 'Boy', 'Brave', 'Bring', 'Brisk', 'Brown', 'Build', 'But', 'Buy',
+  'Call', 'Calm', 'Came', 'Can', 'Car', 'Care', 'Carry', 'Catch', 'Cause', 'Cent', 'Chair', 'Charm', 'Cheer', 'Chic', 'Chief', 'Clean', 'Clear', 'Close', 'Cold', 'Come', 'Cool', 'Could', 'Cow', 'Crisp', 'Crown', 'Cupid', 'Cure', 'Cut', 'Cute',
+  'Dad', 'Dance', 'Dark', 'Data', 'Dawn', 'Day', 'Days', 'Dear', 'Deep', 'Did', 'Does', 'Dog', 'Done', 'Door', 'Dose', 'Dot', 'Down', 'Draw', 'Dream', 'Drink', 'Drive', 'Drop', 'Dry', 'Duck',
+  'Each', 'Early', 'Earn', 'Earth', 'Ease', 'Easy', 'Eat', 'Eco', 'Edit', 'Eight', 'Elite', 'End', 'Enjoy', 'Epic', 'Even', 'Ever', 'Every', 'Exact', 'Extra', 'Eyes',
+  'Fab', 'Face', 'Fact', 'Fair', 'Faith', 'Fall', 'Fame', 'Fancy', 'Far', 'Farm', 'Fast', 'Feast', 'Feel', 'Fell', 'Few', 'Find', 'Fine', 'Fire', 'Firm', 'First', 'Fish', 'Five', 'Flair', 'Flash', 'Fleet', 'Flora', 'Flow', 'Fly', 'Focus', 'Fond', 'Food', 'Foot', 'For', 'Force', 'Forge', 'Form', 'Found', 'Four', 'Frank', 'Free', 'Fresh', 'From', 'Front', 'Full', 'Fun', 'Funny',
+  'Gain', 'Game', 'Gave', 'Gem', 'Get', 'Giddy', 'Gig', 'Girl', 'Give', 'Glad', 'Gleam', 'Glee', 'Glide', 'Glory', 'Glow', 'Goes', 'Going', 'Gold', 'Good', 'Got', 'Grace', 'Grand', 'Grant', 'Grasp', 'Great', 'Green', 'Grey', 'Grin', 'Grow', 'Guide', 'Guru', 'Guy',
+  'Had', 'Hail', 'Hair', 'Half', 'Halo', 'Hand', 'Handy', 'Happy', 'Hard', 'Hardy', 'Has', 'Have', 'Haven', 'Head', 'Heal', 'Hear', 'Heard', 'Heart', 'Heavy', 'Help', 'Her', 'Here', 'Hero', 'High', 'Him', 'Hip', 'His', 'Hold', 'Home', 'Honey', 'Hope', 'Horse', 'Hot', 'House', 'How', 'Hub', 'Hug', 'Hurt',
+  'Icon', 'Idea', 'Ideal', 'Inner', 'Into', 'Iron',
   'Jazzy', 'Jewel', 'Joke', 'Jolly', 'Joy', 'Jump', 'Just',
-  'Keen', 'Keep', 'Key', 'Kin', 'Kind', 'Kite', 'Knack', 'Know',
-  'Laugh', 'Lead', 'Leap', 'Learn', 'Light', 'Lit', 'Live', 'Logic', 'Love', 'Loyal', 'Lucid', 'Luck', 'Lucky',
-  'Magic', 'Mate', 'Max', 'Merry', 'Mirth', 'Model', 'Moral', 'Muse', 'Music',
-  'Neat', 'Nerve', 'New', 'Nice', 'Nifty', 'Noble', 'Novel', 'Now',
-  'Oasis', 'Okay', 'Old', 'Open', 'Own',
-  'Pace', 'Pal', 'Pax', 'Peace', 'Perk', 'Play', 'Plus', 'Pop', 'Power', 'Proud', 'Pure',
-  'Quiet',
-  'Raw', 'Real', 'Relax', 'Rich', 'Rise',
-  'Safe', 'Sky', 'Smile', 'Spark', 'Star', 'Sun', 'Sweet',
-  'Top', 'True', 'Trust', 'Try',
-  'Unity',
-  'Vibe', 'Vivid',
-  'Warm', 'Win', 'Wise', 'Worth',
-  'Yes', 'Young',
+  'Keen', 'Keep', 'Kept', 'Key', 'Kin', 'Kind', 'Kite', 'Knack', 'Knew', 'Know',
+  'Land', 'Large', 'Last', 'Late', 'Laugh', 'Lead', 'Leap', 'Learn', 'Leave', 'Left', 'Less', 'Let', 'Life', 'Light', 'Like', 'Line', 'List', 'Lit', 'Live', 'Logic', 'Long', 'Look', 'Lost', 'Lot', 'Love', 'Low', 'Loyal', 'Lucid', 'Luck', 'Lucky',
+  'Made', 'Magic', 'Make', 'Man', 'Many', 'Mark', 'Mate', 'Maths', 'Max', 'May', 'Mean', 'Men', 'Merry', 'Might', 'Mile', 'Mind', 'Mirth', 'Miss', 'Model', 'Money', 'Moon', 'Moral', 'More', 'Most', 'Move', 'Much', 'Mum', 'Muse', 'Music', 'Must',
+  'Name', 'Near', 'Neat', 'Need', 'Nerve', 'Never', 'New', 'Next', 'Nice', 'Nifty', 'Night', 'Noble', 'Non', 'Not', 'Note', 'Novel', 'Now',
+  'Oasis', 'Off', 'Often', 'Okay', 'Old', 'Once', 'One', 'Only', 'Open', 'Order', 'Other', 'Our', 'Out', 'Over', 'Own',
+  'Pace', 'Page', 'Pal', 'Paper', 'Part', 'Party', 'Pass', 'Past', 'Pax', 'Peace', 'Perk', 'Pick', 'Piece', 'Place', 'Plant', 'Play', 'Plus', 'Point', 'Poor', 'Pop', 'Power', 'Press', 'Proud', 'Pull', 'Pure', 'Push', 'Put',
+  'Quick', 'Quiet', 'Quite',
+  'Rain', 'Ran', 'Raw', 'Read', 'Real', 'Red', 'Relax', 'Rest', 'Rich', 'Ride', 'Right', 'Rise', 'River', 'Road', 'Room', 'Round', 'Run',
+  'Safe', 'Said', 'Same', 'Saw', 'Say', 'Says', 'Sea', 'See', 'Seen', 'Seven', 'Shall', 'Shape', 'She', 'Sheep', 'Shell', 'Shoe', 'Short', 'Show', 'Shown', 'Side', 'Sing', 'Sit', 'Six', 'Sky', 'Sleep', 'Small', 'Smart', 'Smell', 'Smile', 'Snow', 'Some', 'Song', 'Soon', 'Sound', 'Spark', 'Spell', 'Spelt', 'Stand', 'Star', 'Start', 'State', 'Stay', 'Step', 'Still', 'Stood', 'Stop', 'Story', 'Study', 'Such', 'Sun', 'Sure', 'Sweet',
+  'Take', 'Talk', 'Tall', 'Tell', 'Ten', 'Test', 'Them', 'Then', 'There', 'These', 'They', 'Thing', 'Think', 'Third', 'This', 'Those', 'Three', 'Time', 'Today', 'Told', 'Took', 'Top', 'Town', 'Tree', 'True', 'Trust', 'Try', 'Turn', 'Two',
+  'Under', 'Unity', 'Until', 'Upon', 'Use', 'Used',
+  'Very', 'Vibe', 'Vivid', 'Voice',
+  'Walk', 'Wall', 'Want', 'Warm', 'Wash', 'Watch', 'Water', 'Way', 'Well', 'Went', 'Were', 'What', 'When', 'Where', 'Which', 'While', 'White', 'Who', 'Whole', 'Why', 'Will', 'Win', 'Wind', 'Wise', 'Wish', 'With', 'Wood', 'Word', 'Work', 'World', 'Worth', 'Would', 'Write', 'Wrong',
+  'Year', 'Years', 'Yes', 'You', 'Young', 'Your', 'Yours',
   'Zen', 'Zest', 'Zesty'
 ];
 
@@ -398,13 +398,39 @@ function gridToCanvas() {
   return canvas;
 }
 
+function ensureLandscapeCanvas(canvas) {
+  if (canvas.width >= canvas.height) {
+    return canvas;
+  }
+
+  const rotated = document.createElement('canvas');
+  rotated.width = canvas.height;
+  rotated.height = canvas.width;
+
+  const ctx = rotated.getContext('2d');
+  ctx.translate(rotated.width, 0);
+  ctx.rotate(Math.PI / 2);
+  ctx.drawImage(canvas, 0, 0);
+
+  return rotated;
+}
+
 async function handleShare() {
-  const canvas = gridToCanvas();
+  let canvas = gridToCanvas();
+
+  // Keep portrait device captures landscape when shared.
+  if (rows > cols) {
+    canvas = ensureLandscapeCanvas(canvas);
+  }
 
   // Convert canvas to Blob
   const blob = await new Promise(resolve =>
     canvas.toBlob(resolve, 'image/png')
   );
+
+  if (!blob) {
+    return;
+  }
 
   const file = new File([blob], 'griddle.png', { type: 'image/png' });
 
@@ -412,7 +438,7 @@ async function handleShare() {
   if (navigator.canShare && navigator.canShare({ files: [file] })) {
     try {
       await navigator.share({
-        title: 'My Griddle drawing',
+        title: 'Griddled this for you...',
         files: [file]
       });
       return;
