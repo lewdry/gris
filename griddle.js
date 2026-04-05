@@ -110,24 +110,26 @@ function createCells() {
   grid.innerHTML = '';
   grid.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
   grid.style.gridTemplateRows = `repeat(${rows}, minmax(0, 1fr))`;
+  grid.setAttribute('aria-rowcount', String(rows));
+  grid.setAttribute('aria-colcount', String(cols));
 
   for (let i = 0; i < cols * rows; i++) {
+    const row = Math.floor(i / cols) + 1;
+    const col = (i % cols) + 1;
     const cell = document.createElement('button');
     cell.type = 'button';
     cell.className = 'cell';
     cell.dataset.index = i;
     cell.setAttribute('role', 'gridcell');
+    cell.setAttribute('aria-rowindex', String(row));
+    cell.setAttribute('aria-colindex', String(col));
     cell.setAttribute('aria-pressed', 'false');
-    cell.setAttribute('aria-label', `Cell ${Math.floor(i / cols) + 1} of ${cols * rows}`);
+    cell.setAttribute('aria-label', `Row ${row}, Column ${col}`);
     cell.addEventListener('pointerdown', onCellPointerDown);
     cell.addEventListener('pointerenter', onCellEnter);
     cell.addEventListener('keydown', onCellKeyDown);
     grid.appendChild(cell);
   }
-
-  grid.addEventListener('pointermove', onGridPointerMove);
-  grid.addEventListener('pointerup', onPointerUp);
-  grid.addEventListener('pointercancel', onPointerUp);
 }
 
 function updateStatus() {
@@ -351,6 +353,9 @@ if (window.visualViewport) {
 resetBtn.addEventListener('click', resetGrid);
 clearBtn.addEventListener('click', handleClear);
 shareBtn.addEventListener('click', handleShare);
+grid.addEventListener('pointermove', onGridPointerMove);
+grid.addEventListener('pointerup', onPointerUp);
+grid.addEventListener('pointercancel', onPointerUp);
 
 // --- Share: render grid to PNG and invoke Web Share API ---
 

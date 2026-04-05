@@ -26,8 +26,10 @@
       </div>
     </section>
 
-    <div class="grid-wrap" role="grid" aria-label="touch-enabled grid">
-      <div id="grid" class="grid" aria-live="off"></div>
+    <p id="gridHelp" class="sr-only">Use touch or mouse to paint cells. Use arrow keys to move, and Enter or Space to toggle a cell.</p>
+
+    <div class="grid-wrap">
+      <div id="grid" class="grid" role="grid" aria-label="touch-enabled grid" aria-describedby="gridHelp" aria-live="off"></div>
     </div>
   </main>
 
