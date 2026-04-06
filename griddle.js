@@ -319,7 +319,7 @@ function paintWord(word) {
   const logicalCols = isPortrait ? rows : cols;
   const logicalRows = isPortrait ? cols : rows;
   const offsetX = Math.max(0, Math.floor((logicalCols - totalWidth) / 2));
-  const offsetY = Math.max(0, Math.floor((logicalRows - glyphHeight) / 2));
+  const offsetY = Math.max(0, Math.floor((logicalRows - glyphHeight) / 2 - 3));
 
   clearGrid();
 
