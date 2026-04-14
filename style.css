@@ -42,10 +42,12 @@ body {
 }
 
 .app {
-  width: min(100%, 1000px);
+  width: min(100%, 92vw);
+  max-width: 920px;
   display: flex;
   flex-direction: column;
   max-height: 100%;
+  margin-inline: auto;
 }
 
 .header {
